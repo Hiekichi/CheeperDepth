@@ -240,6 +240,8 @@ class App():
             for i in range(2,4):
                 if pyxel.btn(KEY[i]) or pyxel.btn(GPAD[i]):
                     myship.x += (D[i][0] * self.myship_dx)
+                    myship.x = max(myship.x,0)
+                    myship.x = min(223,myship.x)
             ### マイシップから爆雷の投下
             if dcharge_max > len(dcharges):
                 if pyxel.btnp(pyxel.KEY_Z) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -326,7 +328,7 @@ class App():
         for mine in reversed(mines):
             mine.update()
             if mine.y < 25:
-                if myship.x < mine.x and myship.x + 24 > mine.x and self.gamestart_flag:
+                if myship.x - 3 < mine.x and myship.x + 29 > mine.x and self.gamestart_flag:
                     self.gamestart_flag = False
                     self.gamestart_waittime = 320
                     self.gamestart_flag = False
@@ -343,7 +345,7 @@ class App():
         for torpedo in reversed(torpedos):
             torpedo.update()
             if round(torpedo.y) == 25:
-                if myship.x < torpedo.x and myship.x + 28 > torpedo.x and self.gamestart_flag:
+                if myship.x - 2 < torpedo.x and myship.x + 30 > torpedo.x and self.gamestart_flag:
                     self.gamestart_waittime = 320
                     self.gamestart_flag = False
                     explos.append(Explo(torpedo.x,torpedo.y))
