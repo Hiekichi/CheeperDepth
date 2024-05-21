@@ -1,18 +1,21 @@
 import pyxel
 
-R_X = 103
-R_Y = 204
+R_X = 95
+R_Y = 196
 R_W = 52
 R_H = 38
 
+D =   [[0,1],[0,-1],[1,0],[-1,0]]  ## 下・上・右・左
+KEY = [pyxel.KEY_DOWN,pyxel.KEY_UP,pyxel.KEY_RIGHT,pyxel.KEY_LEFT]
 GPAD = [pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,
         pyxel.GAMEPAD1_BUTTON_DPAD_UP,
         pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,
         pyxel.GAMEPAD1_BUTTON_DPAD_LEFT]
-KEY = [pyxel.KEY_DOWN,pyxel.KEY_UP,pyxel.KEY_RIGHT,pyxel.KEY_LEFT]
-D =   [[0,1],[0,-1],[1,0],[-1,0]]
+LAXIS = [pyxel.GAMEPAD1_AXIS_LEFTY,pyxel.GAMEPAD1_AXIS_LEFTY,
+         pyxel.GAMEPAD1_AXIS_LEFTX,pyxel.GAMEPAD1_AXIS_LEFTX]
+LAXIS_RANGE = [[30,36000],[-36000,-30],[30,36000],[-36000,-30]]
 
-dcharge_max = 4
+dcharge_max = 0
 dcharges = []
 submarines = []
 manbous = []
@@ -125,7 +128,7 @@ class MyShip():
         pyxel.blt(self.x,self.y, 0, 0,16, 32,16, 12)
         x = R_X+self.x/5
         y = R_Y+self.y/5
-        pyxel.rect(x,y,4,2,7)
+        pyxel.rect(x,y+2,4,2,7)
 myship = MyShip()
 
 class Submarine():
@@ -200,7 +203,7 @@ class Manbou():
 
 class App():
     def __init__(self):
-        pyxel.init(256,256,title="チーパーデプス（CheepeerDepth）",fps=48)
+        pyxel.init(240,240,title="チーパーデプス（CheaperDepth）",fps=48)
         pyxel.load("depth.pyxres")
         self.init_game()
         pyxel.run(self.update, self.draw)
@@ -238,16 +241,16 @@ class App():
         if self.gamestart_flag == True:
             ### マイシップの移動
             for i in range(2,4):
-                if pyxel.btn(KEY[i]) or pyxel.btn(GPAD[i]):
+                if pyxel.btn(KEY[i]) or (pyxel.btnv(LAXIS[i]) > LAXIS_RANGE[i][0] and pyxel.btnv(LAXIS[i]) < LAXIS_RANGE[i][1]) or pyxel.btn(GPAD[i]):
                     myship.x += (D[i][0] * self.myship_dx)
                     myship.x = max(myship.x,0)
-                    myship.x = min(223,myship.x)
+                    myship.x = min(208,myship.x)
             ### マイシップから爆雷の投下
             if dcharge_max > len(dcharges):
-                if pyxel.btnp(pyxel.KEY_Z) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                if pyxel.btnp(pyxel.KEY_Z) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X):
                     dcharges.append(DCharge(myship.x-8,20))
                     pyxel.play(0,0)
-                elif pyxel.btnp(pyxel.KEY_X) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                elif pyxel.btnp(pyxel.KEY_X) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                     dcharges.append(DCharge(myship.x+32,20))
                     pyxel.play(0,0)
         else: # ゲーム開始前
@@ -390,8 +393,8 @@ class App():
 
     def draw(self):
         pyxel.cls(5)                 # 海の色
-        pyxel.rect(0,0,256,30,6)     # 空の色
-        pyxel.rect(0,190,256,66,13)  # 情報欄の背景（グレー）
+        pyxel.rect(0,0,240,30,6)     # 空の色
+        pyxel.rect(0,190,240,66,13)  # 情報欄の背景（グレー）
         pyxel.rect(R_X-30,R_Y,R_W+60,R_H+1,0) # レーダー
         pyxel.line(R_X,R_Y,R_X,R_Y+R_H,5)
         pyxel.line(R_X+R_W,R_Y,R_X+R_W,R_Y+R_H,5)
@@ -425,33 +428,33 @@ class App():
             for x in range(dcharge_max - len(dcharges)):
                 pyxel.blt(100+x*10,6,0,24,48,8,8,5)
             if dcharge_max == 8:
-                pyxel.blt(74,5,0,0,144,19,8,7)
+                pyxel.blt(76,6,0,0,144,19,8,7)
         ### メッセージの描画
         for message in reversed(messages):
             message.draw()
         ### ゲームオーバー表示またはタイトル画像の描画
         if self.gamestart_flag == False:
             if self.gamestart_waittime > 0:
-                pyxel.blt(80,100,1,0,128,96,10,0)
+                pyxel.blt(72,100,1,0,128,96,10,0)
             else:
-                pyxel.blt(54,60,1,0,0,144,72,0)
+                pyxel.blt(46,60,1,0,0,144,72,0)
 
 
         pyxel.rect(0,190,256,10,13)  # レーダーの上（爆雷）を消す
         pyxel.rect(R_X-60,R_Y,30,R_H+1,13) # レーダーの左を消す
         pyxel.rect(R_X+R_W+30,R_Y,30,R_H+1,13) # レーダーの左を消す
         ### スコア
-        pyxel.blt(16,200,1,0,105,28,7,0)
+        pyxel.blt(12,194,1,0,105,28,7,0)
         for i in range(0,6):  ## スコア
             n = self.score//(10**i)%10*8
-            pyxel.blt(50-i*6,210,1,n,96,8,8,0)
+            pyxel.blt(46-i*6,204,0,n,248,5,7,0)
         ### ハイスコア
-        pyxel.blt(16,224,1,0,113,40,7,0)
+        pyxel.blt(12,216,1,0,113,40,7,0)
         for i in range(0,6):
             n = self.hi_score//(10**i)%10*8
-            pyxel.blt(50-i*6,234,1,n,96,8,8,0)
+            pyxel.blt(46-i*6,226,0,n,248,8,8,0)
         ### 操作説明
-        pyxel.blt(196,206,1,0,72,45,21,0)  ## 操作説明
+        pyxel.blt(186,202,1,0,160,47,32,0)  ## 操作説明
 
         ### デバッグ用
         #pyxel.text(10,50,"self.cnt:{}".format(self.cnt),7)
