@@ -1,7 +1,5 @@
 # CheeperDepth
 
-# ChottoCopter
-
 ## 概要
 - プログラミング学習用に作成したゲームプログラムです。
 - ナニカ問題がありましたら対応させていただきたいと思います。
@@ -20,7 +18,7 @@
 - タイトル画面がCheeperと誤字してますが修正をさぼってます。
 
 ## 動作確認はこちらから
-- [Pyxel Web Launcher](https://kitao.github.io/pyxel/wasm/launcher/?run=Hiekichi.CheaperDepth.CheaperDepth240)
-- [ハンドヘルドゲーム機用(pyxappファイル)](https://github.com/Hiekichi/CheaperDepth/blob/main/CheaperDepth.pyxapp)
+- [Pyxel Web Launcher](https://kitao.github.io/pyxel/wasm/launcher/?run=Hiekichi.CheeperDepth.CheaperDepth240)
+- [ハンドヘルドゲーム機用(pyxappファイル)](https://github.com/Hiekichi/CheeperDepth/blob/main/CheaperDepth.pyxapp)
 
 昔があるから今がある・・・
