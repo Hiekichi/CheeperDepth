@@ -1,4 +1,4 @@
-# CheeperDepth
+# CheaperDepth
 
 ## 概要
 - プログラミング学習用に作成したゲームプログラムです。
